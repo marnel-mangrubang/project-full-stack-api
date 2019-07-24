@@ -23,7 +23,6 @@ const company = require('./companies')
     }
   ]
 }
-
 */
 
 
@@ -31,7 +30,7 @@ const unitSchema = new mongoose.Schema({
   kind: {type: String, required: true},
   floor: {type: Number, required: true},
   special_monthly_offer: {type: Number},
-  company: [company]
+  company: [company],
 }, {
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 })

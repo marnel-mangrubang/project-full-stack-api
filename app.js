@@ -21,7 +21,9 @@ app.use(require('body-parser').json())
 
 app.use('/api/v1/units', require('./api/routes/units'))
 
+app.use('/api/v1/companies', require('./api/routes/companies'))
 
+app.use('/api/v1/employees', require('./api/routes/employees'))
 
 
 // Not Found Handler

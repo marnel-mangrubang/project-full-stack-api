@@ -14,7 +14,7 @@ router.get('/', (req, res, next) => {
     if(kind){
       findby = {kind: kind}
 
-      Units.find(findby)
+      Units.find(findby).select('-__v')
       .then((units) => {
         const status = 201
         const message = `Successfully retrieved all units matching {kind:${kind}} query.`
@@ -33,7 +33,7 @@ router.get('/', (req, res, next) => {
 
     if(floor){
       findby = {floor: floor}
-      Units.find(findby)
+      Units.find(findby).select('-__v')
       .then((units) => {
         const status = 201
         const message = `Successfully retrieved all units matching {floor:${floor}} query.`
@@ -54,7 +54,7 @@ router.get('/', (req, res, next) => {
     if(occupied === "true"){
         console.log(occupied)
 
-        Units.find()
+        Units.find().select('-__v')
         .then((unit) => {
           // console.log(unit)
           const status = 201
@@ -78,7 +78,7 @@ router.get('/', (req, res, next) => {
 
     }else if(occupied === "false"){
 
-        Units.find()
+        Units.find().select('-__v')
         .then((unit) => {
           // console.log(unit)
           const status = 201
@@ -101,7 +101,7 @@ router.get('/', (req, res, next) => {
         })
 
     }else{
-        Units.find()
+        Units.find().select('-__v')
         .then((response) => {
           const status = 200
           res.json({status, response})
@@ -274,6 +274,9 @@ router.get('/:id/company/employees', (req, res, next) => {
 })
 
 
+
+
+
 //GET - /api/v1/units/[id]/company/employees/[id]  - DONE
 router.get('/:id/company/employees/:employeeId', (req, res, next) => {
 
@@ -347,7 +350,7 @@ router.patch('/:id/company/employees/:employeeId', (req, res, next) => {
   .then((unit) => {
     const status = 200
     const message = `Successfully updated employee ${par}.`
-    const path = '/:id/company/employees/:id'
+    const path = '/:id/company/employees/:employeeId'
 
     //Loop through each company and find the employee that match the employeeId params
     //Once you find it, update it with the values of req.body
@@ -369,6 +372,44 @@ router.patch('/:id/company/employees/:employeeId', (req, res, next) => {
   })
 
 })
+
+
+//DELETE - /api/v1/units/[id]/company/employees/[id]  - DONE
+router.delete('/:id/company/employees/:employeeId', (req, res, next) => {
+  const employeePar = req.params.employeeId
+  const unitPar = req.params.id
+
+  Units.findOne({_id: req.params.id}) //Promise
+  .then((unit) => {
+    const status = 200
+    const message = `Successfully removed employee ${employeePar} from unit ${unitPar}.`
+    const path = '/:id/company/employees/:employeeId'
+
+    //Loop through
+    unit.company.map((comp) => {
+      comp.employees.pull(req.params.employeeId);
+    })
+
+    //Save parent document
+    unit.save()
+
+    res.json({status: status, message, path: path,  unit})
+
+  })
+  .catch((error) => {
+    console.error(error)
+    const e = new Error(`Something went wrong with REMOVING employee${employeePar} info.`)
+    e.status = 400
+    next(e)
+  })
+
+})
+
+
+
+
+
+
 
 
 module.exports = router
