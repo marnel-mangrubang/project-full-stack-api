@@ -1,0 +1,7 @@
+{
+    "env":{
+      "MONGO_DB": "mongodb+srv://marnel:marnel123@marnels-api-xxg5m.mongodb.net/units_dev?retryWrites=true&w=majority",
+      "NODE_ENV": "development",
+      "PORT": 5000
+    }
+}
